@@ -1,0 +1,33 @@
+{
+  "name" : "anna-slackbot",
+  "version" : "0.0.1",
+  "description" : "Boten Anna & Slack ftw!",
+  "scripts" : {},
+  "repository": {
+    "type" : "git",
+    "url" : "git@github.com:yveshwang/anna-slackbot.git"
+  },
+  "author" : {
+    "name" : "Yves Hwang",
+    "email" : "yveshwang@gmail.com",
+    "url" : "http://macyves.wordpress.com"
+  },
+  "bugs" : {
+    "url" : "https://github.com/yveshwang/anna-slackbot/issues"
+  },
+  "license" : "Apache-2.0",
+  "bin" : {
+    "anna-slackbot" : "./server.js"
+  },
+  "main" : "./server.js",
+  "engines" : {
+    "node" : "5.10.0",
+    "npm" : "3.8.3"
+  },
+  "dependencies" : {
+    "botkit" : "^0.0.15"
+  },
+  "scripts" : {
+    "start" : "node server.js"
+  }
+}
