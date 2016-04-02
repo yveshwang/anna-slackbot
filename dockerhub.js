@@ -14,10 +14,21 @@ Date: 01.04.2016
 
 require('./utils');
 
+const protocol = 'https';
+const host = 'registry.hub.docker.com';
+const path = process.env.dockerhub_path;
+const method = 'POST';
+
 var dockerhub = function () {};
-dockerhub.prototype.trigger = function(https, method, host, path, payload, callback) {
-  console.log('triggering dockerhub on ' + (https === 'https' ? "https://" : "http://") + host + path);
-  curl(https, method, host, path, payload, callback);
+dockerhub.prototype.trigger = function(callback) {
+  console.log('triggering dockerhub on ' + (protocol === 'https' ? "https://" : "http://") + host + path);
+  var options = {
+    hostname: host,
+    path: path,
+    //This is what changes the request to a POST request
+    method: method
+  };
+  curl(protocol, options, "", callback);
 }
 
 module.exports = new dockerhub();

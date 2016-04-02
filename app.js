@@ -47,12 +47,46 @@ controller.hears(["keyword","^docker build$"],["direct_message","direct_mention"
       bot.reply(message, responseToString(retVal));
     }
   }
-  var res = dockerhub.trigger('https', 'POST', 'registry.hub.docker.com', process.env.dockerhub_path, "", callback);
+  var res = dockerhub.trigger(callback);
+});
+
+controller.hears(["keyword","about"],["direct_message","direct_mention"],function(bot,message){
+  bot.reply(message, 'Jag känner en bot, hon heter anna, anna heter hon, och hon kan banna banna dig så hårt. Hon röjer upp i våran kanal. Jag vill berätta för dig att jag känner en bot.')
+  var options = {
+    hostname: '127.0.0.1',
+    port: server.port,
+    path: '/',
+    //This is what changes the request to a POST request
+    method: 'GET'
+  };
+  var res = curl('http', options, "", function(err, retVal){
+    if(err) {
+      bot.reply(message, error.message);
+    } else {
+      var body = '';
+      retVal.on('data', function(d) {
+              body += d;
+      });
+      retVal.on('end', function() {
+        console.log("received all res payload now. " + body);
+        //var parsed = JSON.parse(body);
+        //console.log(responseToString(response));
+        bot.reply(message, responseToString(retVal));
+        bot.reply(message, body);
+      });
+    }
+  });
 });
 
 controller.hears(["keyword","test"],["direct_message","direct_mention"],function(bot,message){
   bot.reply(message, 'bot test.')
-  var res = curl('http', 'GET', 'www.vg.no', '/', "", function(err, retVal){
+  var options = {
+    hostname: 'www.vg.no',
+    path: '/',
+    //This is what changes the request to a POST request
+    method: 'GET'
+  };
+  var res = curl('http', options, "", function(err, retVal){
     if(err) {
       bot.reply(message, error.message);
     } else {
@@ -61,10 +95,71 @@ controller.hears(["keyword","test"],["direct_message","direct_mention"],function
   });
 });
 
+controller.hears(["keyword","^webhook$"],["direct_message","direct_mention"],function(bot,message){
+  bot.reply(message, 'bot webhook test.')
+  var options = {
+    hostname: 'hooks.slack.com',
+    path: process.env.slack_webhook_path,
+    //This is what changes the request to a POST request
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  };
+  var res = curl('https', options,
+    "payload={\"text\" : \"This is posted to #infra and comes from a bot named webhookbot.\"}", function(err, response){
+    if(err) {
+      bot.reply(message, error.message);
+    } else {
+      var body = '';
+      response.on('data', function(d) {
+              body += d;
+      });
+      response.on('end', function() {
+        console.log("received all res payload now. " + body);
+        //var parsed = JSON.parse(body);
+        //console.log(responseToString(response));
+        bot.reply(message, responseToString(response));
+      });
+    }
+  });
+});
+
+function webhookcallback(err, res) {
+  //note that slack needs urlencoded payload
+  let msg = `Docker Repository ${res.body.repository.repo_name} updated by ${res.body.push_data.pusher}`;
+  console.log(msg);
+  console.log(responseToString(res));
+  var options = {
+    hostname: 'hooks.slack.com',
+    path: process.env.slack_webhook_path,
+    //This is what changes the request to a POST request
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  };
+  curl('https', options ,
+    "payload={\"text\" : \"" + msg + "\"}", function(err, response){
+    if(err) {
+      console.log("Error on issuing slack webhook.");
+    } else {
+      var body = '';
+      response.on('data', function(d) {
+              body += d;
+      });
+      response.on('end', function() {
+        // Data reception is done, do whatever with it!
+        console.log("received all res payload now. " + body);
+        //var parsed = JSON.parse(body);
+        //console.log(responseToString(response));
+        console.log(responseToString(response));
+      });
+    }
+  });
+}
+
 bot.startRTM(function(err,bot,payload) {
   if (err) {
     throw new Error('Could not connect to Slack');
   } else {
+    server.dockerhubcallback(webhookcallback);
     server.start();
   }
 });

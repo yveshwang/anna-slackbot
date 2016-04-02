@@ -29,17 +29,27 @@ listener.get('/', (req, res) => {
 });
 listener.post('/dockerhub/webhook', (req, res) => {
   if( !req.body) {
+    callback(new Error("Webhook did not receive any req body."), req);
     return res.status(400).send();
+  } else {
+    console.log("req.body = ");
+    console.log(req.body);
+    callback(null, req);
+    return res.status(200).send();
   }
-  console.log(req.body);
-  res.status(200).send();
+
 });
 var server = function () {};
+var callback;
+server.prototype.port = PORT;
 server.prototype.start = function() {
   console.log("express server starting.");
   listener.listen(PORT, () => {
     console.log("express server started.");
     console.log("listening on: http://localhost:"+PORT);
   });
+}
+server.prototype.dockerhubcallback = function(_callback) {
+  callback = _callback;
 }
 module.exports = new server();

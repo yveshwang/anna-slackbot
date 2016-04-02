@@ -11,6 +11,20 @@ anna-slackbot
 =============
 Boten Anna & Slack ftw!
 
+slack commands
+--------------
+anna                    says hi
+about                   about anna
+docker build            rebuild all base images on dockerhub.
+                        this should also trigger the webhook once dockerhub is completed
+test                    sends a test HTTP GET request to a 3rd party
+webhook                 sends a test HTTP POST request to anna's webhook
+
+API endpoints
+-------------
+GET /                           pings back
+POST /dockerhub/webhook         endpoint for dockerhub
+
 config
 ------
 Make sure your env has the following:
@@ -27,6 +41,9 @@ To test the dockerhub webhook:
   npm start
   curl -X POST -H "Content-Type: application/json" http://localhost:3000/dockerhub/webhook -d @payload.json
 
+To test the Slack webhook:
+
+  curl -X POST --data-urlencode 'payload={"text": "This is posted to #infra and comes from a bot named webhookbot."}' https://hooks.slack.com/services/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
 
 Big thanks to...
 ----------------
