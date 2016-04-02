@@ -17,9 +17,9 @@
   },
   "license" : "Apache-2.0",
   "bin" : {
-    "anna-slackbot" : "./server.js"
+    "anna-slackbot" : "./app.js"
   },
-  "main" : "./server.js",
+  "main" : "./app.js",
   "engines" : {
     "node" : "5.10.0",
     "npm" : "3.8.3"
@@ -28,6 +28,6 @@
     "botkit" : "^0.0.15"
   },
   "scripts" : {
-    "start" : "node server.js"
+    "start" : "node app.js"
   }
 }
