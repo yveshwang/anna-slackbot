@@ -22,6 +22,7 @@ if (!process.env.slack_token) {
 }
 
 var Botkit = require('botkit');
+var server = require('./server');
 var controller = Botkit.slackbot();
 var bot = controller.spawn({
   token: process.env.slack_token
@@ -63,5 +64,7 @@ controller.hears(["keyword","test"],["direct_message","direct_mention"],function
 bot.startRTM(function(err,bot,payload) {
   if (err) {
     throw new Error('Could not connect to Slack');
+  } else {
+    server.start();
   }
 });

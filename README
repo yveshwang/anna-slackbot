@@ -8,12 +8,27 @@ Date: 01.04.2016
  \__,_||_| |_||_| |_| \__,_|      |___/|_| \__,_| \___||_|\_\|_.__/  \___/  \__|
 
 anna-slackbot
-#############
+=============
 Boten Anna & Slack ftw!
 
 config
-==
+------
 Make sure your env has the following:
 
   export slack_token=abc
   export dockerhub_path="/u/awesomecompany/docker/trigger/someverylong/id"
+  export express_port=3000
+  export slack_webhook_path="/services/T0F3M2RR9/B0XF2GALA/JYs3gPIgEzgit0WH6VmQBqlL"
+
+test
+----
+To test the dockerhub webhook:
+
+  npm start
+  curl -X POST -H "Content-Type: application/json" http://localhost:3000/dockerhub/webhook -d @payload.json
+
+
+Big thanks to...
+----------------
+* botkit's various examples! super helpful! https://github.com/howdyai/botkit/
+* dockerhubslack integration with express! Very nice! https://github.com/chamerling/dockerhub2slack/
