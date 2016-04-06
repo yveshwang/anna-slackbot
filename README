@@ -11,6 +11,18 @@ anna-slackbot
 =============
 Boten Anna & Slack ftw!
 
+To run in docker
+----------------
+So just make sure you got docker installed and node, and the env variables are configured in Dockerfile to your liking:
+
+    $ npm install                               # pulls down the dependencies
+    $ docker build -t anna .                    # builds anna's docker image
+    $ docker run -it -p 3000:3000 --rm anna     # run anna, expose oprt 3000 to host
+
+For a quick test locally, and for example if you are using docker-machine:
+
+    $ curl $(docker-machine ip VM_NAME):3000    # should give you a 200 OK
+
 slack commands
 --------------
 anna                    says hi
@@ -27,7 +39,7 @@ POST /dockerhub/webhook         endpoint for dockerhub
 
 config
 ------
-Make sure your env has the following:
+Make sure your env has the following. See Dockerfile for more info:
 
   export slack_token=abc
   export dockerhub_path="/u/awesomecompany/docker/trigger/someverylong/id"
